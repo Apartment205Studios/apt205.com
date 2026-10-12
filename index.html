@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Apartment 205 Studios | Los Angeles</title>
+  <meta name="description" content="Apartment 205 Studios is a digital-first studio building original shows, communities, and brands. Los Angeles.">
+  <meta name="theme-color" content="#000000">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://apt205.com">
+  <meta property="og:title" content="Apartment 205 Studios | Los Angeles">
+  <meta property="og:description" content="A digital-first studio building original shows, communities, and brands. Los Angeles.">
+  <meta property="og:site_name" content="Apartment 205 Studios">
+  <meta name="twitter:card" content="summary">
+
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+  <link rel="preload" as="image" href="assets/logo.png">
+
+  <style>
+    :root {
+      --black: #000000;
+      --white: #FFFFFF;
+      --red: #FF2121;
+      --blue: #217AFF;
+      --yellow: #FFC107;
+      --text: rgba(255, 255, 255, 0.86);
+      --muted: rgba(255, 255, 255, 0.55);
+      --tagline-fade: 500ms;
+      --hover-accent: var(--red);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--black);
+      color: var(--text);
+      font-family: "League Spartan", system-ui, -apple-system, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior: none;
+    }
+
+    body { position: fixed; inset: 0; }
+
+    /* Custom key cursor (desktop only, toggled by JS) */
+    body.has-key-cursor,
+    body.has-key-cursor * { cursor: none !important; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ---------- Starfield ---------- */
+    #starfield {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: 0;
+    }
+
+    /* ---------- Layout ---------- */
+    main {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
+      pointer-events: none; /* let mouse reach the page; children opt back in */
+    }
+
+    /* The stage is pinned to the exact center. The tagline is absolutely
+       positioned under it, so revealing it never moves the logo. */
+    .stage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(560px, 72vw);
+      pointer-events: auto;
+    }
+
+    .logo-button {
+      display: block;
+      width: 100%;
+      background: none;
+      border: 0;
+      padding: 0;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    .logo-button:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 10px;
+    }
+
+    .logo-button img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 34vh;
+      max-height: 34dvh;
+      object-fit: contain;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    /* Fallback wordmark, only shown if assets/logo.png is missing */
+    .wordmark {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--white);
+      line-height: 0.82;
+      user-select: none;
+    }
+    .wordmark[hidden] { display: none; }
+    .wordmark-main {
+      font-weight: 800;
+      font-size: clamp(56px, 15vw, 150px);
+      letter-spacing: -0.065em;
+    }
+    .wordmark-sub {
+      margin-top: 0.4em;
+      font-weight: 400;
+      font-size: clamp(11px, 2vw, 18px);
+      letter-spacing: 0.9em;
+      padding-left: 0.9em; /* optically re-center tracked text */
+    }
+
+    /* ---------- Tagline ---------- */
+    .tagline {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      width: min(440px, 84vw);
+      /* padding-top bridges the gap so moving the cursor down from
+         the logo onto the tagline never closes it */
+      padding-top: clamp(18px, 3.2vh, 30px);
+      transform: translate(-50%, 6px);
+      text-align: center;
+      font-weight: 300;
+      font-size: clamp(14px, 1.6vw, 17px);
+      line-height: 1.5;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition:
+        opacity var(--tagline-fade) ease,
+        transform var(--tagline-fade) cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0s linear var(--tagline-fade);
+    }
+
+    .stage.is-open .tagline {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translate(-50%, 0);
+      transition:
+        opacity var(--tagline-fade) ease,
+        transform var(--tagline-fade) cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0s linear 0s;
+    }
+
+    /* ---------- Instagram ---------- */
+    .social {
+      position: absolute;
+      left: 50%;
+      bottom: calc(28px + var(--safe-bottom));
+      transform: translateX(-50%);
+      pointer-events: auto;
+    }
+
+    .social a {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 10px;
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      transition: color 300ms ease;
+    }
+    .social a span { padding-top: 2px; padding-left: 0.24em; }
+    .social svg { width: 15px; height: 15px; flex: none; }
+
+    .social a:hover,
+    .social a:focus-visible { color: var(--hover-accent); }
+    .social a:focus-visible {
+      outline: 2px solid var(--hover-accent);
+      outline-offset: 2px;
+    }
+    .social a:focus:not(:focus-visible) { outline: none; }
+
+    /* ---------- Key cursor ---------- */
+    .key-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      font-size: 22px;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+      opacity: 0;
+      transition: opacity 200ms ease;
+      will-change: transform;
+    }
+    .key-cursor.is-visible { opacity: 1; }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 640px) {
+      .stage { width: min(78vw, 400px); }
+      .social { bottom: calc(22px + var(--safe-bottom)); }
+    }
+
+    @media (max-height: 480px) and (orientation: landscape) {
+      .stage { width: min(46vw, 360px); }
+      .tagline { padding-top: 14px; }
+      .social { bottom: calc(12px + var(--safe-bottom)); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tagline, .stage.is-open .tagline {
+        transform: translate(-50%, 0);
+        transition: opacity 200ms ease, visibility 0s linear 0s;
+      }
+      .key-cursor { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="starfield" aria-hidden="true"></canvas>
+
+  <main>
+    <h1 class="sr-only">Apartment 205 Studios</h1>
+
+    <div class="stage" id="stage">
+      <button class="logo-button" id="logoButton" type="button"
+              aria-expanded="false" aria-controls="tagline">
+        <img src="assets/logo.png"
+             alt="Apartment 205 Studios logo"
+             width="824" height="242"
+             decoding="async"
+             onerror="this.hidden=true;document.getElementById('wordmark').hidden=false;">
+        <span class="wordmark" id="wordmark" hidden aria-hidden="true">
+          <span class="wordmark-main">APT.205</span>
+          <span class="wordmark-sub">studios</span>
+        </span>
+        <span class="sr-only">About the studio</span>
+      </button>
+
+      <p class="tagline" id="tagline">
+        A digital-first studio building original shows, communities, and brands. Los Angeles.
+      </p>
+    </div>
+
+    <nav class="social" aria-label="Social">
+      <a href="https://www.instagram.com/apartment205studios/"
+         target="_blank" rel="noopener noreferrer"
+         aria-label="Apartment 205 Studios on Instagram (opens in a new tab)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+          <circle cx="12" cy="12" r="4.2"></circle>
+          <circle cx="17.4" cy="6.6" r="0.6" fill="currentColor" stroke="none"></circle>
+        </svg>
+        <span>Instagram</span>
+      </a>
+    </nav>
+  </main>
+
+  <div class="key-cursor" id="keyCursor" aria-hidden="true">🔑</div>
+
+  <script>
+  (function () {
+    "use strict";
+
+    /* =====================================================================
+       ANIMATION SETTINGS
+       Tweak these to fine-tune the page. Nothing below this block needs
+       to change for normal adjustments.
+       ===================================================================== */
+    const CONFIG = {
+      // Grid
+      gridSpacing: 30,          // px between dot centers (desktop/tablet)
+      gridSpacingMobile: 24,    // px between dot centers on screens under 640px wide
+      maxDots: 5000,            // safety cap; spacing grows automatically past this
+
+      // Dot size (CSS px radius)
+      minRadius: 0.9,           // resting size: the small, understated dots
+      maxRadius: 2.9,           // peak of each dot's breathing cycle
+      radiusVariation: 0.25,    // per-dot size randomness (0 = identical, 0.25 = +/-25%)
+      colorRadiusBoost: 1.12,   // colored dots are drawn this much larger than neutral ones
+
+      // Dot color & opacity
+      dotOpacity: 0.5,          // opacity of neutral gray / off-white dots (0 to 1)
+      colorOpacity: 1.0,        // opacity of red / blue / yellow dots (0 to 1)
+      coloredDotRatio: 0.27,    // share of dots using brand colors (0.25 to 0.30 recommended)
+
+      // Breathing (pulsation)
+      pulseDurationMin: 5,      // seconds, fastest full grow-and-shrink cycle
+      pulseDurationMax: 9,      // seconds, slowest cycle
+      pulsePhaseVariation: 1,   // 0 = every dot in sync, 1 = fully staggered
+
+      // Drift (star-like wobble around each grid point)
+      driftDistanceMin: 4,      // px, smallest wobble
+      driftDistanceMax: 8,      // px, largest wobble
+      driftSpeed: 0.15,         // average wobble cycles per second (lower = calmer)
+      driftSpeedVariation: 0.55,// per-dot speed randomness (0 = all equal, 0.55 = +/-55%)
+
+      // Mouse spotlight
+      mouseRadius: 170,         // px, reach of the cursor spotlight
+      mouseMaxRadius: 4.2,      // px, dot radius directly under the cursor
+      mouseStrength: 1,         // 0 = off, 1 = full enlargement
+      mouseSmoothing: 6,        // how quickly dots respond (higher = snappier, lower = softer)
+
+      // Soft oval clearing around the logo (never drawn, it only shapes the dots)
+      logoOvalWidth: 1.18,      // oval width as a multiple of the logo's width
+      logoOvalHeight: 1.5,      // oval height as a multiple of the logo's height
+      logoOvalInner: 0.55,      // dots fully gone inside this fraction of the oval
+      logoOvalOuter: 1.1,       // dots back to full size/opacity at this fraction
+                                // (raise Inner for a tighter clearing, Outer for a softer edge)
+
+      // Clear zone around the Instagram link
+      socialClearance: 14,      // px of empty sky kept around the Instagram link
+      clearanceFeather: 18,     // px over which dots fade back in at a zone's edge
+
+      // Logo reveal
+      taglineFadeMs: 500,       // ms, tagline fade in / out
+      taglineClearance: 16,     // px of sky cleared around the tagline when it appears
+      taglinePushDistance: 16,  // px nearby dots slide away as the tagline appears
+      taglinePushReach: 60,     // px beyond the tagline that dots still get nudged
+
+      // Key cursor
+      cursorOffsetX: -3,        // px, shifts the emoji so the key tip sits on the pointer
+      cursorOffsetY: -19
+    };
+
+    /* ===================================================================== */
+
+    const NEUTRALS = ["#7d7d7d", "#a3a3a3", "#c9c9c9", "#ececec"];
+    const BRAND = ["#FF2121", "#217AFF", "#FFC107"];
+    const PALETTE = NEUTRALS.concat(BRAND);
+    const BRAND_START = NEUTRALS.length;
+    const TAU = Math.PI * 2;
+
+    const root = document.documentElement;
+    const body = document.body;
+    const canvas = document.getElementById("starfield");
+    const ctx = canvas.getContext("2d", { alpha: true });
+
+    const mqReduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mqFine = window.matchMedia("(hover: hover) and (pointer: fine)");
+
+    root.style.setProperty("--tagline-fade", CONFIG.taglineFadeMs + "ms");
+    root.style.setProperty("--hover-accent", BRAND[(Math.random() * BRAND.length) | 0]);
+
+    /* ---------- Grid state (typed arrays, built once per resize) ---------- */
+    let W = 0, H = 0, DPR = 1, count = 0;
+    let x0, y0, rMin, rMax, pFreq, pPhase, dAx, dAy, fX, fY, phX, phY, inf, order;
+    let mFixed, mTag, pTx, pTy;     // clear-zone masks (1 = visible) and tagline push vectors
+    let partX, partY, partR, partA; // reusable scratch buffers for partly faded dots
+    let revealLin = 0, revealTarget = 0;   // tagline reveal progress, 0 to 1
+    let bucketStart = new Int32Array(PALETTE.length + 1);
+
+    const mouse = { x: -9999, y: -9999, active: false };
+    let rafId = 0, lastT = 0, running = false;
+
+    function rand(a, b) { return a + Math.random() * (b - a); }
+
+    function buildGrid() {
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = Math.round(W * DPR);
+      canvas.height = Math.round(H * DPR);
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+      let spacing = W < 640 ? CONFIG.gridSpacingMobile : CONFIG.gridSpacing;
+      let cols, rows;
+      for (;;) {
+        cols = Math.ceil(W / spacing) + 1;
+        rows = Math.ceil(H / spacing) + 1;
+        if (cols * rows <= CONFIG.maxDots) break;
+        spacing *= 1.1;
+      }
+      const ox = (W - (cols - 1) * spacing) / 2;
+      const oy = (H - (rows - 1) * spacing) / 2;
+
+      count = cols * rows;
+      x0 = new Float32Array(count); y0 = new Float32Array(count);
+      rMin = new Float32Array(count); rMax = new Float32Array(count);
+      pFreq = new Float32Array(count); pPhase = new Float32Array(count);
+      dAx = new Float32Array(count); dAy = new Float32Array(count);
+      fX = new Float32Array(count); fY = new Float32Array(count);
+      phX = new Float32Array(count); phY = new Float32Array(count);
+      inf = new Float32Array(count);
+      const bucket = new Uint8Array(count);
+      const colored = new Uint8Array(count);
+
+      const v = CONFIG.radiusVariation;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const i = r * cols + c;
+          x0[i] = ox + c * spacing;
+          y0[i] = oy + r * spacing;
+
+          const s = rand(1 - v, 1 + v);
+          rMin[i] = CONFIG.minRadius * s;
+          rMax[i] = CONFIG.maxRadius * rand(1 - v, 1 + v);
+
+          pFreq[i] = 1 / rand(CONFIG.pulseDurationMin, CONFIG.pulseDurationMax);
+          pPhase[i] = Math.random() * CONFIG.pulsePhaseVariation;
+
+          const d = rand(CONFIG.driftDistanceMin, CONFIG.driftDistanceMax);
+          const a = Math.random() * TAU;
+          dAx[i] = d * (0.6 + 0.4 * Math.abs(Math.cos(a)));
+          dAy[i] = d * (0.6 + 0.4 * Math.abs(Math.sin(a)));
+          const sv = CONFIG.driftSpeedVariation;
+          fX[i] = CONFIG.driftSpeed * rand(1 - sv, 1 + sv) * TAU * (Math.random() < 0.5 ? -1 : 1);
+          fY[i] = CONFIG.driftSpeed * rand(1 - sv, 1 + sv) * TAU * (Math.random() < 0.5 ? -1 : 1);
+          phX[i] = Math.random() * TAU;
+          phY[i] = Math.random() * TAU;
+
+          // Brand color. Neighbor damping avoids clumps; the base rate is raised
+          // to compensate so the overall share still lands on coloredDotRatio.
+          let p = CONFIG.coloredDotRatio * 1.38;
+          if (c > 0 && colored[i - 1]) p *= 0.45;
+          if (r > 0 && colored[i - cols]) p *= 0.45;
+          if (Math.random() < p) {
+            colored[i] = 1;
+            // avoid the same brand color as the left/top neighbor
+            let k = (Math.random() * BRAND.length) | 0;
+            const left = c > 0 ? bucket[i - 1] : -1, up = r > 0 ? bucket[i - cols] : -1;
+            if (BRAND_START + k === left || BRAND_START + k === up) k = (k + 1 + ((Math.random() * 2) | 0)) % BRAND.length;
+            bucket[i] = BRAND_START + k;
+            rMin[i] *= CONFIG.colorRadiusBoost;
+            rMax[i] *= CONFIG.colorRadiusBoost;
+          } else {
+            bucket[i] = (Math.random() * NEUTRALS.length) | 0;
+          }
+        }
+      }
+
+      // Sort dots by color so each color is one fill call per frame
+      bucketStart = new Int32Array(PALETTE.length + 1);
+      for (let i = 0; i < count; i++) bucketStart[bucket[i] + 1]++;
+      for (let b = 0; b < PALETTE.length; b++) bucketStart[b + 1] += bucketStart[b];
+      const fillPos = bucketStart.slice(0, PALETTE.length);
+      order = new Uint32Array(count);
+      for (let i = 0; i < count; i++) order[fillPos[bucket[i]]++] = i;
+
+      partX = new Float32Array(count); partY = new Float32Array(count);
+      partR = new Float32Array(count); partA = new Float32Array(count);
+      mFixed = new Float32Array(count); mTag = new Float32Array(count);
+      pTx = new Float32Array(count); pTy = new Float32Array(count);
+      computeMasks();
+    }
+
+    /* ---------- Clear zones around the logo, Instagram link and tagline ---------- */
+    function zoneOf(rect) {
+      return { cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2,
+               hw: rect.width / 2, hh: rect.height / 2, ok: rect.width > 0 && rect.height > 0 };
+    }
+    function distTo(z, x, y) {          // distance from a point to a rectangle (0 inside)
+      const dx = Math.max(Math.abs(x - z.cx) - z.hw, 0);
+      const dy = Math.max(Math.abs(y - z.cy) - z.hh, 0);
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+    function smooth(e0, e1, v) {
+      const t = Math.min(Math.max((v - e0) / (e1 - e0), 0), 1);
+      return t * t * (3 - 2 * t);
+    }
+
+    function computeMasks() {
+      if (!count) return;
+      const logoImg = document.querySelector(".logo-button img");
+      const logoEl = logoImg && !logoImg.hidden ? logoImg : document.getElementById("wordmark");
+      const logoZ = zoneOf(logoEl.getBoundingClientRect());
+      const socialZ = zoneOf(document.querySelector(".social a").getBoundingClientRect());
+      const range = document.createRange();
+      range.selectNodeContents(document.getElementById("tagline"));
+      const tagRect = range.getBoundingClientRect();
+      const tagZ = zoneOf(tagRect);
+      tagZ.cy -= 6 * (1 - (stage.classList.contains("is-open") ? 1 : 0)); // ignore the slide-in offset
+
+      const F = CONFIG.clearanceFeather;
+      const tc = CONFIG.taglineClearance;
+      const reach = tc + F + CONFIG.taglinePushReach;
+
+      const ovA = logoZ.hw * CONFIG.logoOvalWidth, ovB = logoZ.hh * CONFIG.logoOvalHeight;
+
+      for (let i = 0; i < count; i++) {
+        const x = x0[i], y = y0[i];
+        let m = 1;
+        if (logoZ.ok) {   // soft horizontal oval: dots shrink and fade toward the logo
+          const ex = (x - logoZ.cx) / ovA, ey = (y - logoZ.cy) / ovB;
+          m *= smooth(CONFIG.logoOvalInner, CONFIG.logoOvalOuter, Math.sqrt(ex * ex + ey * ey));
+        }
+        if (socialZ.ok) m *= smooth(CONFIG.socialClearance, CONFIG.socialClearance + F, distTo(socialZ, x, y));
+        mFixed[i] = m;
+
+        mTag[i] = 1; pTx[i] = 0; pTy[i] = 0;
+        if (!tagZ.ok) continue;
+        const d = distTo(tagZ, x, y);
+        mTag[i] = smooth(tc, tc + F, d);
+        if (d >= reach) continue;
+
+        // Push direction: away from the nearest edge of the tagline box
+        let ux, uy;
+        if (d > 0) {
+          const qx = Math.min(Math.max(x, tagZ.cx - tagZ.hw), tagZ.cx + tagZ.hw);
+          const qy = Math.min(Math.max(y, tagZ.cy - tagZ.hh), tagZ.cy + tagZ.hh);
+          ux = (x - qx) / d; uy = (y - qy) / d;
+        } else {
+          const ex = tagZ.hw - Math.abs(x - tagZ.cx), ey = tagZ.hh - Math.abs(y - tagZ.cy);
+          if (ey <= ex) { ux = 0; uy = y < tagZ.cy ? -1 : 1; }
+          else { ux = x < tagZ.cx ? -1 : 1; uy = 0; }
+        }
+        const amt = CONFIG.taglinePushDistance * (1 - smooth(0, reach, d));
+        pTx[i] = ux * amt; pTy[i] = uy * amt;
+      }
+    }
+
+    /* ---------- Rendering ---------- */
+    function draw(t, dt, animate) {
+      ctx.clearRect(0, 0, W, H);
+
+      const useMouse = animate && mouse.active && CONFIG.mouseStrength > 0;
+      const R = CONFIG.mouseRadius, R2 = R * R;
+      const mx = mouse.x, my = mouse.y;
+      const k = 1 - Math.exp(-CONFIG.mouseSmoothing * dt);
+      const strength = Math.min(Math.max(CONFIG.mouseStrength, 0), 1);
+      const mMax = CONFIG.mouseMaxRadius;
+      const rv = smooth(0, 1, revealLin);   // eased tagline reveal
+
+      for (let b = 0; b < PALETTE.length; b++) {
+        const start = bucketStart[b], end = bucketStart[b + 1];
+        if (start === end) continue;
+        const baseAlpha = b >= BRAND_START ? CONFIG.colorOpacity : CONFIG.dotOpacity;
+        ctx.fillStyle = PALETTE[b];
+        ctx.globalAlpha = baseAlpha;
+        ctx.beginPath();
+        let nPart = 0;   // partly faded dots get drawn individually after the batch
+
+        for (let j = start; j < end; j++) {
+          const i = order[j];
+          let vis = mFixed[i];
+          if (vis <= 0.01) continue;          // inside the logo / Instagram clear zone
+          let x = x0[i], y = y0[i], r = rMin[i];
+          if (rv > 0) {                        // tagline showing: fade out and slide away
+            vis *= 1 - rv * (1 - mTag[i]);
+            if (vis <= 0.01) continue;
+            x += pTx[i] * rv;
+            y += pTy[i] * rv;
+          }
+
+          if (animate) {
+            // Two layered oscillations per axis so each dot wanders, not just swings
+            x += dAx[i] * (0.75 * Math.sin(fX[i] * t + phX[i]) + 0.25 * Math.sin(fY[i] * 2.3 * t + phY[i]));
+            y += dAy[i] * (0.75 * Math.sin(fY[i] * t + phY[i]) + 0.25 * Math.sin(fX[i] * 1.9 * t + phX[i]));
+
+            // Breathing: cosine ease starting at the minimum size
+            const s = 0.5 - 0.5 * Math.cos(TAU * (t * pFreq[i] + pPhase[i]));
+            r = rMin[i] + (rMax[i] - rMin[i]) * s;
+
+            // Cursor spotlight with smooth radial falloff
+            let target = 0;
+            if (useMouse) {
+              const dx = x - mx, dy = y - my;
+              const d2 = dx * dx + dy * dy;
+              if (d2 < R2) {
+                const f = 1 - Math.sqrt(d2) / R;
+                target = f * f * (3 - 2 * f);
+              }
+            }
+            const cur = inf[i] + (target - inf[i]) * k;
+            inf[i] = cur;
+            if (cur > 0.001) r += (mMax - r) * cur * strength;
+          }
+
+          if (vis < 0.98) {                     // fading dot: smaller and dimmer
+            r *= 0.35 + 0.65 * vis;
+            partX[nPart] = x; partY[nPart] = y; partR[nPart] = r; partA[nPart] = vis; nPart++;
+            continue;
+          }
+          ctx.moveTo(x + r, y);
+          ctx.arc(x, y, r, 0, TAU);
+        }
+        ctx.fill();
+
+        for (let q = 0; q < nPart; q++) {
+          ctx.globalAlpha = baseAlpha * partA[q];
+          ctx.beginPath();
+          ctx.arc(partX[q], partY[q], partR[q], 0, TAU);
+          ctx.fill();
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function frame(now) {
+      const t = now / 1000;
+      const dt = lastT ? Math.min(t - lastT, 0.05) : 0.016;
+      lastT = t;
+      const step = dt / Math.max(CONFIG.taglineFadeMs / 1000, 0.01);
+      if (revealLin < revealTarget) revealLin = Math.min(revealTarget, revealLin + step);
+      else if (revealLin > revealTarget) revealLin = Math.max(revealTarget, revealLin - step);
+      draw(t, dt, true);
+      rafId = requestAnimationFrame(frame);
+    }
+
+    function start() {
+      if (running) return;
+      if (mqReduced.matches) { draw(0, 0, false); return; }
+      running = true;
+      lastT = 0;
+      rafId = requestAnimationFrame(frame);
+    }
+
+    function stop() {
+      running = false;
+      cancelAnimationFrame(rafId);
+    }
+
+    /* ---------- Resize (debounced to one rebuild per frame) ---------- */
+    let resizeQueued = false;
+    function onResize() {
+      if (resizeQueued) return;
+      resizeQueued = true;
+      requestAnimationFrame(function () {
+        resizeQueued = false;
+        if (window.innerWidth === W && window.innerHeight === H) return;
+        buildGrid();
+        if (!running) draw(0, 0, false);
+      });
+    }
+    window.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
+
+    /* ---------- Pause when tab is hidden ---------- */
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) stop(); else start();
+    });
+
+    /* ---------- Key cursor + mouse tracking (desktop mouse only) ---------- */
+    const keyCursor = document.getElementById("keyCursor");
+    let cursorEnabled = false;
+
+    function updateCursorMode() {
+      cursorEnabled = mqFine.matches && !mqReduced.matches;
+      body.classList.toggle("has-key-cursor", cursorEnabled);
+      if (!cursorEnabled) keyCursor.classList.remove("is-visible");
+    }
+
+    window.addEventListener("pointermove", function (e) {
+      if (e.pointerType !== "mouse") { mouse.active = false; return; }
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      mouse.active = !mqReduced.matches;
+      if (cursorEnabled) {
+        keyCursor.style.transform =
+          "translate3d(" + (e.clientX + CONFIG.cursorOffsetX) + "px," +
+          (e.clientY + CONFIG.cursorOffsetY) + "px,0)";
+        keyCursor.classList.add("is-visible");
+      }
+    }, { passive: true });
+
+    document.documentElement.addEventListener("mouseleave", function () {
+      mouse.active = false;
+      keyCursor.classList.remove("is-visible");
+    });
+    window.addEventListener("blur", function () {
+      mouse.active = false;
+      keyCursor.classList.remove("is-visible");
+    });
+
+    /* ---------- Logo reveal ---------- */
+    const stage = document.getElementById("stage");
+    const logoButton = document.getElementById("logoButton");
+
+    function setOpen(open) {
+      stage.classList.toggle("is-open", open);
+      logoButton.setAttribute("aria-expanded", open ? "true" : "false");
+      revealTarget = open ? 1 : 0;
+      if (!running) { revealLin = revealTarget; draw(0, 0, false); } // reduced motion: instant
+    }
+    const isOpen = function () { return stage.classList.contains("is-open"); };
+
+    // Desktop hover: logo opens it; leaving logo + tagline area closes it
+    logoButton.addEventListener("pointerenter", function (e) {
+      if (e.pointerType === "mouse") setOpen(true);
+    });
+    stage.addEventListener("pointerleave", function (e) {
+      if (e.pointerType === "mouse") setOpen(false);
+    });
+
+    // Tap (touch/pen) and keyboard (Enter/Space) toggle
+    let lastPointerType = "mouse";
+    logoButton.addEventListener("pointerdown", function (e) { lastPointerType = e.pointerType; });
+    logoButton.addEventListener("click", function (e) {
+      const fromKeyboard = e.detail === 0;
+      if (fromKeyboard || lastPointerType !== "mouse") setOpen(!isOpen());
+    });
+
+    // Tap outside closes
+    document.addEventListener("pointerdown", function (e) {
+      if (isOpen() && !stage.contains(e.target)) setOpen(false);
+    });
+
+    // Escape closes
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && isOpen()) setOpen(false);
+    });
+
+    /* ---------- Motion preference changes ---------- */
+    function onMotionChange() {
+      updateCursorMode();
+      stop();
+      inf && inf.fill(0);
+      start();
+    }
+    if (mqReduced.addEventListener) {
+      mqReduced.addEventListener("change", onMotionChange);
+      mqFine.addEventListener("change", updateCursorMode);
+    }
+
+    /* ---------- Go ---------- */
+    updateCursorMode();
+    buildGrid();
+    start();
+
+    // Re-measure clear zones once the logo and fonts have their final size
+    function remeasure() { computeMasks(); if (!running) draw(0, 0, false); }
+    const img = document.querySelector(".logo-button img");
+    if (img && !img.complete) { img.addEventListener("load", remeasure); img.addEventListener("error", remeasure); }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
+  })();
+  </script>
+</body>
+</html>
